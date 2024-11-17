@@ -22,7 +22,7 @@ Before we begin let's address some things.
 
 ## VCN
 
-Access the VCN directory and initiate Terraform.
+Access the VCN directory
 
 ```
 cd VCN
@@ -100,7 +100,7 @@ resource "oci_core_subnet" "subnet_2_devops_challenge" {
     compartment_id = var.compartment_id
     display_name = "PUBLIC-SUBNET-2-DEVOPS-CHALLENGE"
     vcn_id = oci_core_vcn.vcn_devops_challenge.id
-    availability_domain = "fGuh:PHX-AD-2" Availability Domain 2
+    availability_domain = "fGuh:PHX-AD-2" #Availability Domain 2
     cidr_block = "10.0.1.0/24"
 }
 ```
@@ -147,14 +147,14 @@ Before we continue with the next section, we need to go to the security list and
 
 Ingress rules:
 
-Source CIDR: 0.0.0.0/0 Port: 80
-Source CIDR: 10.0.0.0/24 Port: 5000
-Source CIDR: 10.0.1.0/24 Port: 5000
+- Source CIDR: 0.0.0.0/0 Port: 80
+- Source CIDR: 10.0.0.0/24 Port: 5000
+- Source CIDR: 10.0.1.0/24 Port: 5000
 
 Egress rules:
 
-Source CIDR: 10.0.0.0/24 Port: 5000
-Source CIDR: 10.0.1.0/24 Port: 5000
+- Source CIDR: 10.0.0.0/24 Port: 5000
+- Source CIDR: 10.0.1.0/24 Port: 5000
 
 ## Instances
 
@@ -181,7 +181,7 @@ cd INSTANCES
 
 There are 3 files. Just like the previous section.
 
-The `` variables.tf ``` where we declare the variables. For this section we are going to declare more variables.
+The ``` variables.tf ``` where we declare the variables. For this section we are going to declare more variables.
 
 ```
 variable "compartment_id" {
@@ -353,12 +353,12 @@ variable "private_ip_2" {
 In the ``` terraform.tfvars ``` is where we write the content of the variables.
 
 ```
-compartment_id = "ocid1.compartment.oc1..aaaaaaaarpkltyqekqwuti6cvutadypr3zv5gm3nd2iygcjbk7i24d6n3lra"
+compartment_id = "<Your_Compartment_OCID>"
 region = "us-phoenix-1"
-subnet_id_1 = "Your_Subnet_1_OCID"
-subnet_id_2 = "Your_Subnet_2_OCID"
-private_ip_1 = "Your_Private_IP_1"
-private_ip_2 = "Your_Private_IP_2"
+subnet_id_1 = "<Your_Subnet_1_OCID>"
+subnet_id_2 = "<Your_Subnet_2_OCID>"
+private_ip_1 = "<Your_Private_IP_1>"
+private_ip_2 = "<Your_Private_IP_2>"
 ```
 
 In the ``` load_balancer.tf ``` we specify the details of the VCN that we are going to create. Let's check each part.
@@ -496,13 +496,13 @@ cd ..
 cd ANSIBLE
 ```
 
-Here we find two files. Let's check them out. The first one is the ```hosts.yaml``` where we specify the public ip of the two instance created before.
+Here we find three files. Let's check them out. The first one is the ```hosts.yaml``` where we specify the public ip of the two instance created before.
 
 ```
 all:
   hosts:
-    129.146.27.240:
-    129.146.98.211:
+    <Your_Public_IP_1>:
+    <Your_Public_IP_2>:
   vars:
     ansible_ssh_extra_args: '-o StrictHostKeyChecking=no'
 ```
@@ -588,6 +588,25 @@ The second file we install everything we need to make the node application run. 
       state: enabled
       immediate: true
     become: true
+```
+
+The third file will allow us to make sure the node application is always up and running.
+
+```
+[Unit]
+Description=nodejs-server
+
+[Service]
+ExecStart=/usr/bin/node /home/opc/nodeapp/app.js
+Restart=on-failure
+# Output to syslog
+StandardOutput=syslog
+StandardError=syslog
+SyslogIdentifier=nodejs-example
+Environment=NODE_ENV=production PORT=5000
+
+[Install]
+WantedBy=multi-user.target
 ```
 
 Finally you install the node application with the ansible command:
