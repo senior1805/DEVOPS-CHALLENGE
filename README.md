@@ -312,7 +312,7 @@ terraform plan
 terraform apply
 ```
 
-We go to the Instances section of the OCI and check if the resources were created. We use the public ssh to access with ssh and using the private key to check it works. Copy the Private IP beacause you will need for the next section.
+We go to the Instances section of the OCI and check if the resources were created. We use the public ssh to access with ssh and using the private key to check it works. Copy the Private and Public IP beacause you will need for the next section.
 
 ```
 ssh -i "/path/to/private_key" opc@<Your_public_ip>
