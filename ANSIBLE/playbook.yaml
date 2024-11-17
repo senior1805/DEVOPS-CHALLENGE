@@ -19,7 +19,14 @@
     file:
       path: ~/nodeapp
       state: directory
-    
+
+  - name: Clone github repository
+    git:
+      repo: https://github.com/abkunal/Chat-App-using-Socket.io
+      dest: ~/nodeapp
+      clone: yes
+      update: yes
+      accept_hostkey: yes
 
   - name: Install the npm express
     npm:
