@@ -22,7 +22,7 @@ Before we begin let's address some things.
 
 ## VCN
 
-Access the VCN directory
+Access the VCN directory.
 
 ```
 cd VCN
@@ -158,12 +158,6 @@ Egress rules:
 
 ## Instances
 
-Before we begin, we need to create an ssh-key pair in order for us to access the instances. We create the in the directory that we are currently working on:
-
-```
-ssh-keygen
-```
-
 In this section we create two compute instances (virtual machines). The instances will have the following characteristics:
 
 - Operating System: Oracle Linux 8
@@ -179,7 +173,13 @@ cd ..
 cd INSTANCES
 ```
 
-There are 3 files. Just like the previous section.
+Before we begin, we need to create an ssh-key pair in order for us to access the instances. We create the in the directory that we are currently working on:
+
+```
+ssh-keygen
+```
+
+There are three files. 
 
 The ``` variables.tf ``` where we declare the variables. For this section we are going to declare more variables.
 
@@ -208,6 +208,8 @@ variable "subnet_id_2" {
   type = string
 }
 ```
+
+We have the same two variables from the previous section. We added four new variables: The image is the operating system of the instances, the ssh key we created and the OCID of the create subnets.
 
 In the ``` terraform.tfvars ``` is where we write the content of the variables. The "image" variable is to specify the image of the operating system which is Linux 8 and arm64 architecture and for the US West (Phoenix) region. Do not change this. It is from this website: https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-aarch64-2024-09-30-0.htm
 
@@ -247,7 +249,7 @@ provider "oci" {
 resource "oci_core_instance" "Instance-1-DEVOPS-CHALLENGE" {
   compartment_id      = var.compartment_id
   shape               = "VM.Standard.A1.Flex"
-  availability_domain = "fGuh:PHX-AD-1"
+  availability_domain = "fGuh:PHX-AD-1" #Availability Domain 1
   display_name        = "Instance-1-DEVOPS-CHALLENGE"
 
   source_details {
@@ -265,7 +267,7 @@ resource "oci_core_instance" "Instance-1-DEVOPS-CHALLENGE" {
   }
 
   create_vnic_details {
-    subnet_id = var.subnet_id_1
+    subnet_id = var.subnet_id_1 #Subnet in Availability Domain 1
   }
 
   metadata = {
@@ -277,7 +279,7 @@ resource "oci_core_instance" "Instance-1-DEVOPS-CHALLENGE" {
 resource "oci_core_instance" "Instance-2-DEVOPS-CHALLENGE" {
   compartment_id      = var.compartment_id
   shape               = "VM.Standard.A1.Flex"
-  availability_domain = "fGuh:PHX-AD-2"
+  availability_domain = "fGuh:PHX-AD-2" #Availability Domain 2
   display_name        = "Instance-2-DEVOPS-CHALLENGE"
 
   source_details {
@@ -295,7 +297,7 @@ resource "oci_core_instance" "Instance-2-DEVOPS-CHALLENGE" {
   }
 
   create_vnic_details {
-    subnet_id = var.subnet_id_2
+    subnet_id = var.subnet_id_2 #Subnet in Availability Domain 1
   }
 
   metadata = {
@@ -312,7 +314,7 @@ terraform plan
 terraform apply
 ```
 
-We go to the Instances section of the OCI and check if the resources were created. We use the public ssh to access with ssh and using the private key to check it works. Copy the Private and Public IP beacause you will need for the next section.
+We go to the Instances section of the OCI and check if the resources were created. We use the public ssh to access with ssh and using the private key to check if it works. Copy the Private and Public IP beacause you will need them for the next section.
 
 ```
 ssh -i "/path/to/private_key" opc@<Your_public_ip>
@@ -320,7 +322,7 @@ ssh -i "/path/to/private_key" opc@<Your_public_ip>
 
 ## Load Balancer
 
-There are 3 files. Just like the previous section.
+There are three files. 
 
 The `` variables.tf ``` where we declare the variables. For this section we are going to declare more variables.
 
@@ -350,6 +352,8 @@ variable "private_ip_2" {
 }
 ```
 
+We have the same four variables from the previous section. We add two more which are the private IPs of the instances created.
+
 In the ``` terraform.tfvars ``` is where we write the content of the variables.
 
 ```
@@ -361,7 +365,7 @@ private_ip_1 = "<Your_Private_IP_1>"
 private_ip_2 = "<Your_Private_IP_2>"
 ```
 
-In the ``` load_balancer.tf ``` we specify the details of the VCN that we are going to create. Let's check each part.
+In the ``` load_balancer.tf ``` we specify the details of the Load Balancer that we are going to create. Let's check each part.
 
 - This section is the default that your terraform file should contain. It is also where we specify the region.
 
@@ -427,7 +431,7 @@ resource oci_load_balancer_backend_set BS-DEVOPS-CHALLENGE {
 }
 ```
 
-- We add the two instance to the backend set. Remeber to open port 5000
+- We add the two instance to the backend set. 
 
 ```
 #Adding Instance 1 to Backend set
@@ -496,7 +500,7 @@ cd ..
 cd ANSIBLE
 ```
 
-Here we find three files. Let's check them out. The first one is the ```hosts.yaml``` where we specify the public ip of the two instance created before.
+Here we find three files. Let's check them out. The first one is the ```hosts.yaml``` where we specify the public IP of the two instance created before.
 
 ```
 all:
