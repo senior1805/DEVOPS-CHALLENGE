@@ -1,4 +1,4 @@
-#DevOps Challenge
+# DevOps Challenge
 
 This is the Documentation for the Acklen Avenue DevOps Challenge
 
@@ -10,7 +10,7 @@ Before we begin let's address some things.
 - Availability Zone (AZ) in AWS = Availability Domain (AD) in Oracle
 - The content of this documentation is based on the official Oracle Documentation and the Oracle Cloud Infrastructure DevOps Professional Course
 
-##Prerequsites
+## Prerequsites
 
 - You should have an Oracle Cloud Account.
 - Log in to your account.
@@ -20,7 +20,7 @@ Before we begin let's address some things.
 - Create a Directory to store all the content of the repository
 - Download the repository.
 
-##VCN
+## VCN
 
 Access the VCN directory and initiate Terraform.
 
@@ -156,7 +156,7 @@ Egress rules:
 Source CIDR: 10.0.0.0/24 Port: 5000
 Source CIDR: 10.0.1.0/24 Port: 5000
 
-##Instances
+## Instances
 
 Before we begin, we need to create an ssh-key pair in order for us to access the instances. We create the in the directory that we are currently working on:
 
@@ -318,7 +318,7 @@ We go to the Instances section of the OCI and check if the resources were create
 ssh -i "/path/to/private_key" opc@<Your_public_ip>
 ```
 
-##Load Balancer
+## Load Balancer
 
 There are 3 files. Just like the previous section.
 
@@ -487,7 +487,7 @@ terraform apply
 
 All the infrastructure has been created.
 
-##Install Node Application with Ansible
+## Install Node Application with Ansible
 
 Now we have to install the node application. For this let's move to the ansible directory:
 
@@ -596,6 +596,6 @@ Finally you install the node application with the ansible command:
 ansible-playbook -i hosts.yaml playbook.yaml --key-file "/path_to_ssh_key/id_rsa"
 ```
 
-##Make sure the application is working
+## Make sure the application is working
 
 You should be able to copy the IP address of the load balancer.
