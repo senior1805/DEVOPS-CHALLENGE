@@ -1,0 +1,70 @@
+---
+- name: Install and Configure web servers
+  hosts: all
+  remote_user: opc
+  tasks:
+  - name: Install Nodejs
+    ansible.builtin.yum:
+      name: nodejs
+      state: present
+    become: true
+
+  - name: Install git
+    ansible.builtin.yum:
+      name: git
+      state: latest
+    become: true
+
+  - name: Create directory for cloned repository
+    file:
+      path: ~/nodeapp
+      state: directory
+    
+
+  - name: Install the npm express
+    npm:
+      path: ~/nodeapp
+      name: express
+      state: present
+
+  - name: Install the npm socket.io
+    npm:
+      path: ~/nodeapp
+      name: socket.io
+      state: present
+
+  - name: Create service file
+    template:
+      src: ~/Experiments/Different_Compartment/ANSIBLE/service
+      dest: /etc/systemd/system/nodejs.service
+    register: service_conf
+    become: true
+
+  - name: Reload systemd daemon
+    systemd:
+      daemon_reload: yes
+    when: service_conf.changed
+    become: true
+
+  - name: Start NodeJS service
+    service:
+      name: nodejs
+      state: started
+      enabled: yes
+    become: true
+
+  - name: Permit traffic in default zone for http service
+    ansible.posix.firewalld:
+      service: http
+      permanent: true
+      state: enabled
+      immediate: true
+    become: true
+
+  - name: Permit traffic in the port of the application
+    ansible.posix.firewalld:
+      port: 5000/tcp
+      permanent: true
+      state: enabled
+      immediate: true
+    become: true

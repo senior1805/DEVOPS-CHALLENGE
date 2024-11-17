@@ -1,0 +1,6 @@
+compartment_id = "ocid1.compartment.oc1..aaaaaaaarpkltyqekqwuti6cvutadypr3zv5gm3nd2iygcjbk7i24d6n3lra"
+region = "us-phoenix-1"
+subnet_id_1 = "ocid1.subnet.oc1.phx.aaaaaaaaultpzmwv4vo6376xbsvuae3i37lrrmmeircltbv3fju4z7quzs5q"
+subnet_id_2 = "ocid1.subnet.oc1.phx.aaaaaaaai7vfzrgm72ysuvi3syiqwcxnh35odul2vjdeirwmc6yd63epjsca"
+private_ip_1 = "10.0.0.115"
+private_ip_2 = "10.0.1.157"
