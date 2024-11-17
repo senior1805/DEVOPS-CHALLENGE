@@ -1,5 +1,5 @@
 ---
-- name: Install and Configure web servers
+- name: Install and Configure node application
   hosts: all
   remote_user: opc
   tasks:

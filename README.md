@@ -4,7 +4,7 @@ This is the Documentation for the Acklen Avenue DevOps Challenge
 
 Before we begin let's address some things. 
 
-- The challenge was done using Oracle Cloud Infrastructure since is the only cloud provider I have experience with. Let's translate some concept from one cloud to another.
+- The challenge was done using Oracle Cloud Infrastructure since it is the only cloud provider I have experience with. Let's translate some concept from one cloud to another.
 - VPC in AWS = VCN in Oracle
 - EC2 in AWS = Compute Instance (Virtual Machine) in Oracle
 - Availability Zone (AZ) in AWS = Availability Domain (AD) in Oracle
@@ -15,20 +15,20 @@ Before we begin let's address some things.
 - You should have an Oracle Cloud Account.
 - Log in to your account.
 - You need to create a compartment to store all the resources.
-- Open the Cloud Editor
-- Click on **Terminal** and then on **New Terminal**
-- Create a Directory to store all the content of the repository
-- Download the repository.
+- Open the Code Editor.
+- Click on **Terminal** and then on **New Terminal**.
+- Clone the repository.
 
 ## VCN
 
 Access the VCN directory.
 
 ```
+cd DEVOPS-CHALLENGE
 cd VCN
 ```
 
-The directory is comprised of three files. The ``` vcn.tf ```, ``` variables.tf ``` and ``` terraform.tfvars ```.
+The directory has three files. The ``` vcn.tf ```, ``` variables.tf ``` and ``` terraform.tfvars ```.
 
 In the ``` variables.tf ``` we declare the variables that are going to be used for to create the infrastructure. 
 
@@ -44,7 +44,7 @@ variable "region" {
 
 The variables required are two. You need the compartment OCID where you want to store all the resources and the region. For the region is important to choose one that has at least 3 Availability Domains. For this challenge we are choosing the region of US West (Phoenix). 
 
-In the ``` terraform.tfvars ``` is where we write the content of the variables.
+In the ``` terraform.tfvars ``` is where we write the content of the variables. Substitute the values for your own values.
 
 ```
 compartment_id = "<Your_Compartment_OCID>"
@@ -105,7 +105,7 @@ resource "oci_core_subnet" "subnet_2_devops_challenge" {
 }
 ```
 
--This is where we create the Internet Gateway and the route rules to allow access to the Internet.
+- This is where we create the Internet Gateway and the route rules to allow access to the Internet.
 
 ```
 #Internet Gateway
@@ -209,9 +209,9 @@ variable "subnet_id_2" {
 }
 ```
 
-We have the same two variables from the previous section. We added four new variables: The image is the operating system of the instances, the ssh key we created and the OCID of the create subnets.
+We have the same two variables from the previous section. We added four new variables: The image is the operating system of the instances, the ssh key we created and the OCID of the created subnets. Substitute the values for your own values.
 
-In the ``` terraform.tfvars ``` is where we write the content of the variables. The "image" variable is to specify the image of the operating system which is Linux 8 and arm64 architecture and for the US West (Phoenix) region. Do not change this. It is from this website: https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-aarch64-2024-09-30-0.htm
+In the ``` terraform.tfvars ``` is where we write the content of the variables. The "image" variable is to specify the image of the operating system which is Oracle Linux 8 and arm64 architecture and for the US West (Phoenix) region. Do not change this. It is from this website: https://docs.oracle.com/en-us/iaas/images/oracle-linux-8x/oracle-linux-8-10-aarch64-2024-09-30-0.htm
 
 ```
 compartment_id = "<Your_Compartment_OCID>"
@@ -314,17 +314,26 @@ terraform plan
 terraform apply
 ```
 
-We go to the Instances section of the OCI and check if the resources were created. We use the public ssh to access with ssh and using the private key to check if it works. Copy the Private and Public IP beacause you will need them for the next section.
+We go to the Instances section of the OCI and check if the resources were created. We use the public IP to access with ssh and using the private key to check if it works. 
 
 ```
 ssh -i "/path/to/private_key" opc@<Your_public_ip>
 ```
 
+Copy the Private and Public IP beacause you will need them for the next section.
+
 ## Load Balancer
+
+Access the Load Balancer directory
+
+```
+cd ..
+cd LOAD_BALANCER
+```
 
 There are three files. 
 
-The `` variables.tf ``` where we declare the variables. For this section we are going to declare more variables.
+The ``` variables.tf ``` where we declare the variables. For this section we are going to declare more variables.
 
 ```
 variable "compartment_id" {
@@ -351,10 +360,9 @@ variable "private_ip_2" {
   type = string
 }
 ```
-
 We have the same four variables from the previous section. We add two more which are the private IPs of the instances created.
 
-In the ``` terraform.tfvars ``` is where we write the content of the variables.
+In the ``` terraform.tfvars ``` is where we write the content of the variables. Please write your own variables.
 
 ```
 compartment_id = "<Your_Compartment_OCID>"
@@ -410,7 +418,7 @@ resource oci_load_balancer_load_balancer LB-DEVOPS-CHALLENGE {
 }
 ```
 
-- Here you specify the characteristics of the backend set. The port needs to be 5000 since the node application that is going to be 
+- Here you specify the characteristics of the backend set. The port needs to be 5000 since the node application runs in that port.
 
 ```
 #Create the Backend set
@@ -558,12 +566,12 @@ The second file we install everything we need to make the node application run. 
       state: present
 ```
 
-- We create a service file to make sure the node application is always running and start the application
+- We create a service file to make sure the node application is always running and start the application. Remember to change the path of the service path.
 
 ```
   - name: Create service file
     template:
-      src: /path_to_service_file/service
+      src: /path_to_service_file/service #Remember to change this to your path
       dest: /etc/systemd/system/nodejs.service
     register: service_conf
     become: true
